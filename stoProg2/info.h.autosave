@@ -1,0 +1,80 @@
+#ifndef INFO_H
+#define INFO_H
+#include <QString>
+
+class Book;
+
+class Student {
+protected:
+    QString email;
+    QString phone_number;
+    QString first_name;
+    QString last_name;
+    vector <Book> booksForSale;
+public:
+    //Get and Set Methods for the corresponding state variables
+    Student();
+    QString getEmail () {return email;}
+    void setEmail (QString e) {email = e;}
+    QString getFirst_name () {return first_name;}
+    void setFirst_name (QString fn) {first_name = fn;}
+    QString getLast_name () {return last_name;}
+    void setLast_name (QString ln) {last_name = ln;}
+    QString getPhone_number () {return phone_number;}
+    void setPhone_number (QString pn) {phone_number = pn;}
+    void addStudent(const Student &stu)
+    {
+        students.push_back(&stu);
+    }
+};
+
+class Book {
+	protected: 
+        QString price;
+		QString ISBN;
+		QString title;
+		QString author;
+		QString edition;
+        QString classNumber;
+		QString condition;
+		QString department;
+        Student bookOwner;
+
+	public:
+		//Default constructor
+		Book();
+
+        //Methods for our state variables
+        //Price
+        QString getPrice () {return price;}
+        void setPrice (QString p) {price = p;}
+
+		//ISBN
+		QString getISBN () {return ISBN;}
+		void setISBN (QString IS) {ISBN = IS;}
+
+		//Title
+		QString getTitle () {return title;}
+		void setTitle (QString t) {title = t;}
+
+		//Author
+		QString getAuthor () {return author;}
+		void setAuthor (QString a) {author = a;}
+
+		//Edition
+		QString getEdition () {return edition;}
+		void setEdition (QString e) {edition = e;}
+
+		//Class Number
+        QString getClassNumber () {return classNumber;}
+        void setClassNumber (QString cN) {classNumber = cN;}
+
+		//Condition
+		QString getCondition () {return condition;}
+		void setCondition (QString c) {condition = c;}
+
+		//Department
+		QString getDepartment () {return department;}
+		void setDepartment (QString d) {department = d;}
+	};
+#endif // INFO_H

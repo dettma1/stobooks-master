@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>search</class>
+ <widget class="QDialog" name="search">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="2" column="1">
+    <widget class="QTextEdit" name="param2Box"/>
+   </item>
+   <item row="4" column="1">
+    <widget class="QPushButton" name="pushButton">
+     <property name="font">
+      <font>
+       <family>Garamond</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Submit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QComboBox" name="param1">
+     <property name="font">
+      <font>
+       <family>Garamond</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <item>
+      <property name="text">
+       <string>choose parameter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Author</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Class Number</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Department</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Edition</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ISBN</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Price</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Title</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="exitButton">
+     <property name="font">
+      <font>
+       <family>Garamond</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Quit</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QTextEdit" name="param1Box"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QComboBox" name="param3">
+     <property name="font">
+      <font>
+       <family>Garamond</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <item>
+      <property name="text">
+       <string>choose parameter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Author</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Class Number</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Department</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Edition</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ISBN</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Price</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Title</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QTextEdit" name="param3Box"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QComboBox" name="param2">
+     <property name="font">
+      <font>
+       <family>Garamond</family>
+       <pointsize>18</pointsize>
+      </font>
+     </property>
+     <item>
+      <property name="text">
+       <string>choose parameter</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Author</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Class Number</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Department</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Edition</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>ISBN</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Price</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Title</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string/>
+      </property>
+     </item>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>exitButton</sender>
+   <signal>clicked()</signal>
+   <receiver>search</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>progressBar</receiver>
+   <slot>update()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>336</x>
+     <y>265</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>78</x>
+     <y>31</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

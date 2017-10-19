@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/rcs/student">
+        <file>students.txt</file>
+        <file>students2.txt</file>
+        <file>books.txt</file>
+        <file>ourStudents.txt</file>
+        <file>ourBooks.txt</file>
+        <file>ourRequests.txt</file>
+    </qresource>
+</RCC>

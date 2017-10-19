@@ -1,0 +1,273 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "dialog.h"
+#include "search.h"
+#include "QStackedWidget"
+#include "QPushButton"
+#include "QInputDialog"
+#include "QString"
+#include <QTableView>
+#include "info.h"
+#include "student.h"
+
+//Container to hold all of the books
+vector <Book> books;
+//Function to append a Student object onto our vector of books
+void addBook(Book boo)
+{
+    books.push_back(boo);
+}
+//Container to hold all of the student profiles
+vector <Student> students;
+//Function to append a Student object onto our vector of students
+void addStudent(Student stu)
+{
+    students.push_back(stu);
+}
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    //ui->stackedWidget->setCurrentIndex(0);
+    connect(ui->buyerButton, SIGNAL(clicked(bool)), this, SLOT (on_buyerButton_clicked()));
+    previousPageIndex = 0;
+}
+
+
+MainWindow::~MainWindow()
+{
+
+    delete ui;
+}
+
+
+void MainWindow::on_buyerButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    previousPageIndex = 1;
+
+}
+
+
+void MainWindow::on_sellerButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(5);
+    previousPageIndex = 1;
+}
+
+void MainWindow::on_exitButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
+}
+
+void MainWindow::on_titleBox_textChanged()
+{
+    QString test = ui->authorTextBox->toPlainText();
+    ui->AuthorLabel->setText(test);
+}
+
+void MainWindow::on_submitButton_clicked()
+{
+    Book book1;
+    QString test = ui->authorTextBox->toPlainText();
+    book1.setAuthor(test);
+    //cout << book1.getAuthor() << endl;
+    ui->AuthorLabel->setText(book1.getAuthor());
+}
+
+void MainWindow::on_submitButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    QString username = ui->usernameTextEdit->toPlainText();
+    Student student1(username);
+    previousPageIndex = 0;
+}
+
+/*void MainWindow::on_pushButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(10);
+}*/
+
+void MainWindow::on_add1_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+    previousPageIndex = 2;
+}
+
+void MainWindow::on_add2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+    previousPageIndex = 2;
+}
+
+void MainWindow::on_add3_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+    previousPageIndex = 2;
+}
+void MainWindow::on_add4_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(3);
+    previousPageIndex = 2;
+}
+
+void MainWindow::on_search2_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(10);
+   previousPageIndex = 2;
+}
+
+void MainWindow::on_pushButton_13_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(4);
+    previousPageIndex = 2;
+}
+
+void MainWindow::on_postingButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(6);
+    previousPageIndex = 5;
+}
+
+void MainWindow::on_requestButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(7);
+    previousPageIndex = 5;
+}
+
+void MainWindow::on_remove1_clicked()
+{
+    //ui->stackedWidget->setCurrentIndex(7);
+}
+void MainWindow::on_remove2_clicked()
+{
+    //ui->stackedWidget->setCurrentIndex(7);
+}
+void MainWindow::on_remove3_clicked()
+{
+    //ui->stackedWidget->setCurrentIndex(7);
+}
+void MainWindow::on_remove4_clicked()
+{
+    //ui->stackedWidget->setCurrentIndex(7);
+}
+
+void MainWindow::on_details1_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+    previousPageIndex = 6;
+}
+void MainWindow::on_details2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+    previousPageIndex = 6;
+}
+void MainWindow::on_details3_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+    previousPageIndex = 6;
+}
+void MainWindow::on_details4_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(9);
+    previousPageIndex = 6;
+}
+
+void MainWindow::on_pushButton_14_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(8);
+    previousPageIndex = 6;
+}
+
+void MainWindow::on_submitButton_5_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(6);
+    previousPageIndex = 11;
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    previousPageIndex = 10;
+}
+
+//Back Buttons
+
+void MainWindow::on_back2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(previousPageIndex);
+    if(previousPageIndex == 2){
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+}
+
+void MainWindow::on_back3_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 3){
+       ui->stackedWidget->setCurrentIndex(2);
+   }
+}
+void MainWindow::on_back4_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 4){
+       ui->stackedWidget->setCurrentIndex(3);
+   }
+}
+void MainWindow::on_back5_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 5){
+       ui->stackedWidget->setCurrentIndex(1);
+   }
+}
+void MainWindow::on_back6_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 6){
+       ui->stackedWidget->setCurrentIndex(5);
+   }
+}
+void MainWindow::on_back7_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 7){
+       ui->stackedWidget->setCurrentIndex(5);
+   }
+}
+void MainWindow::on_back8_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 8){
+       ui->stackedWidget->setCurrentIndex(6);
+   }
+}
+void MainWindow::on_back9_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 9){
+       ui->stackedWidget->setCurrentIndex(6);
+   }
+}
+void MainWindow::on_back10_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 10){
+       ui->stackedWidget->setCurrentIndex(2);
+   }
+}
+void MainWindow::on_back11_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+   if(previousPageIndex == 11){
+       ui->stackedWidget->setCurrentIndex(9);
+   }
+}
+
+void MainWindow::on_updateButton_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(11);
+}

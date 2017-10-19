@@ -1,0 +1,706 @@
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "dialog.h"
+#include "search.h"
+#include "QStackedWidget"
+#include "QPushButton"
+#include "QInputDialog"
+#include "QString"
+#include <QTableView>
+#include "book.h"
+#include "student.h"
+#include <vector>
+#include <QTableWidgetItem>
+#include<QChar>
+#include<QFile>
+#include<QTextStream>
+#include<QFileDialog>
+#include<QTextStream>
+#include <QDebug>
+
+const QChar DELIM =  '%';
+
+using namespace std;
+
+
+//function to add a row to table3widget
+/*void addRow(Book newBook){
+    int currentRows = ui->tableWidget_3->rowCount();
+    ui->tableWidget_3->setRowCount(currentRows +1);
+    ui->tableWidget_3->setItem(currentRows,0,new QTableWidgetItem(currentUser));
+    ui->tableWidget_3->setItem(currentRows,1,new QTableWidgetItem(newBook.getTitle()));
+    ui->tableWidget_3->setItem(currentRows,2, new QTableWidgetItem(newBook.getAuthor()));
+    ui->tableWidget_3->setItem(currentRows, 3, new QTableWidgetItem(newBook.getEdition()));
+    ui->tableWidget_3->setItem(currentRows,4, new QTableWidgetItem(newBook.getISBN()));
+    ui->tableWidget_3->setItem(currentRows, 5, new QTableWidgetItem("$" + newBook.getOGPrice()));
+    ui->tableWidget_3->setItem(currentRows, 6, new QTableWidgetItem("$" + newBook.getPrice()));
+}
+*/
+//Keep track of the current user
+QString currentUser;
+
+//Container to hold all of the student profiles
+vector <Student> students;
+//Function to append a Student object onto our vector of students
+void addStudent(Student* stu){students.push_back(*stu);}
+
+//Container to hold all of the books
+vector <Book> books;
+//Function to append a book object onto our vector of books
+void addBook(Book *boo){books.push_back(*boo);}
+
+vector<QString> splitDelim (QString line)
+{
+    vector <QString> temp;
+    QStringList list = line.split("%");
+    for (int i = 0; i < list.length();i++)
+    {
+    temp.push_back(list[i]);
+    }
+return temp;
+}
+
+void readStudents()
+{
+    vector <QString> temp;
+    QString Sline;
+    QFile myfile (":/rcs/student/students.txt");
+    myfile.open(QIODevice::ReadOnly);
+  // if (myfile.open(QFile::ReadOnly))
+   // {
+        while (!myfile.atEnd())
+            {
+                QString line = myfile.readLine();
+                temp = splitDelim(line);
+                Student * s = new Student;
+                int user = 0; int phone = 1; int first = 2; int last = 3;
+                s->setUsername(temp[user]);
+                s->setPhone_number(temp[phone]);
+                s->setFirst_name(temp[first]);
+                s->setLast_name(temp[last]);
+                addStudent(s);
+            }
+        myfile.close();
+    //}
+    //else cout << "Unable to open file, please try again.";
+}
+
+//Writing student vector to a text file
+//void writeStudents ()
+//{
+//    //QFile::WriteUser;
+//    QFile file("/Users/petermchoke/Desktop/SD Home/students.txt");
+//    QString errMsg;
+
+//    QFileDevice::FileError err = QFileDevice::NoError;
+//    if (!file.open(QIODevice::ReadOnly)) {
+//        errMsg = file.errorString();
+//        err = file.error();
+
+//    }
+//    if (file.open(QIODevice::ReadWrite|QFile::Text))
+//    {
+//        QTextStream stream(&file);
+//        for (unsigned long i = 0; i < students.size(); i++)
+//        {
+//            stream << students[i].username << DELIM;
+//            stream << students[i].phone_number << DELIM;
+//            stream << students[i].first_name << DELIM;
+//            stream << students[i].last_name << DELIM << endl;
+//        }
+//        cout << "not working" << endl;
+//    }
+//    file.close();
+//}
+
+//Read in books text file
+void MainWindow::readBooks()
+{
+    vector <QString> temp;
+    QString Sline;
+    QFile myfile (":/rcs/student/books.txt");
+    //if (myfile.open(QIODevice::ReadWrite))
+    //{
+    int i = 0,currentRows;
+    myfile.open(QIODevice::ReadWrite);
+        while (!myfile.atEnd())
+            {
+                QString line = myfile.readLine();
+                temp = splitDelim(line);
+                Book * b = new Book;
+                int title = 0; int author = 1; int edition = 2; int ISBN = 3;
+                int condition = 4; int department = 5; int classNumber = 6;
+                int OgPrice = 7; int price = 8; int owner = 9;
+                b->setTitle(temp[title]);
+                b->setAuthor(temp[author]);
+                b->setEdition(temp[edition]);
+                b->setISBN(temp[ISBN]);
+                b->setCondition(temp[condition]);
+                b->setDepartment(temp[department]);
+                b->setClassNumber(temp[classNumber]);
+                b->setOgPrice(temp[OgPrice]);
+                b->setPrice(temp[price]);
+                b->setOwner(temp[owner]);
+                addBook(b);
+                
+                currentRows = i;
+                MainWindow::ui->tableWidget_4->insertRow(ui->tableWidget_4->rowCount());
+                MainWindow::ui->tableWidget_4->setRowCount(currentRows);
+                ui->tableWidget_4->setItem(currentRows,0,new QTableWidgetItem(b->getOwner()));
+                ui->tableWidget_4->setItem(currentRows,1,new QTableWidgetItem(b->getTitle()));
+                ui->tableWidget_4->setItem(currentRows,2, new QTableWidgetItem(b->getAuthor()));
+                ui->tableWidget_4->setItem(currentRows, 3, new QTableWidgetItem(b->getEdition()));
+                ui->tableWidget_4->setItem(currentRows,4, new QTableWidgetItem(b->getISBN()));
+                ui->tableWidget_4->setItem(currentRows, 5, new QTableWidgetItem("$" + b->getOgPrice()));
+                ui->tableWidget_4->setItem(currentRows, 6, new QTableWidgetItem("$" + b->getPrice()));
+                i++;
+
+            }
+        myfile.close();
+        cout << "book size: " << books.size() << endl;
+    //}
+   //else cout << "Unable to open file, please try again.";
+}
+void printBook(Book bk)
+{
+    if (bk.title == "" && bk.author == "" && bk.edition == "" && bk.ISBN == "" && bk.department == "" && bk.classNumber == "" && bk.OgPrice == "" && bk.price == "" && bk.bookOwner == "")
+        cout << "\nNo book information provided" << endl;
+    cout << "\nBook Information" << endl;
+    cout << "–––––––––––––––––––" << endl;
+    if ( bk.title.toStdString() != "")
+        cout << "Title: " << bk.title.toStdString() << endl;
+    if ( bk.author.toStdString() != "")
+        cout << "Author: " << bk.author.toStdString() << endl;
+    if ( bk.edition.toStdString() != "")
+        cout << "Edition: " << bk.edition.toStdString() << endl;
+    if (bk.ISBN.toStdString() != "")
+        cout << "ISBN: " << bk.ISBN.toStdString() << endl;
+    if ( bk.condition.toStdString() != "")
+        cout << "Condition: " << bk.condition.toStdString() << endl;
+    if ( bk.department.toStdString() != "")
+        cout << "Department: " << bk.department.toStdString() << endl;
+    if ( bk.classNumber.toStdString() != "")
+        cout << "Class Number: " << bk.classNumber.toStdString() << endl;
+    if (bk.OgPrice.toStdString() != "")
+        cout << "Original Price: $" << bk.OgPrice.toStdString() << endl;
+    if (bk.price.toStdString() != "")
+        cout << "Price: $" << bk.price.toStdString() << endl;
+    if ( bk.bookOwner.toStdString() != "")
+        cout << "Owner's User Name: " << bk.bookOwner.toStdString() << endl;
+}
+
+//void writeBooks ()
+//{
+//    fstream file;
+//    file.open ("books.txt", fstream::out);
+//    if (file.is_open())
+//    {
+//        for (int i = 0; i < books.size(); i++)
+//        {
+//            file << books[i].title << DELIM;
+//            file << books[i].author << DELIM;
+//            file << books[i].edition << DELIM;
+//            file << books[i].ISBN << DELIM;
+//            file << books[i].condition << DELIM;
+//            file << books[i].department << DELIM;
+//            file << books[i].classNumber << DELIM;
+//            file << books[i].OgPrice << DELIM;
+//            file << books[i].price << DELIM;
+//            file << books[i].bookOwner << DELIM << endl;
+//        }
+//    }
+//}
+
+//Search Method (this needs to be altered)
+//void searchBook(QString data, char type)
+//{
+//    if (type == 'i')
+//    {
+//    for (int i = 0; i < books.size(); i++)
+//        {
+//            if (books[i].ISBN == data)
+//            {
+//                printBook(books[i]);
+//            }
+//        }
+//    }
+//    else
+//    {
+//    for (int i = 0; i < books.size(); i++)
+//        {
+//            if (books[i].bookOwner == data)
+//            {
+//                printBook(books[i]);
+//            }
+//        }
+//    }
+//}
+void addBooksForSale ()
+{
+    for (unsigned long j = 0; j < students.size(); j++)
+    {
+        for (unsigned long i = 0; i < books.size(); i++)
+        {
+            if (books[i].bookOwner == students[j].username)
+            {
+                students[j].setBooksForSale(books[i].ISBN);
+            }
+        }
+    }
+}
+
+
+//Search Method (make sure to read in students first)
+bool searchStudent(QString user)
+{
+    for (unsigned long j = 0; j < students.size(); j++)
+    {
+        if (students[j].username == user)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    readStudents();
+    ui->stackedWidget->setCurrentIndex(0);
+    connect(ui->buyerButton, SIGNAL(clicked(bool)), this, SLOT (on_buyerButton_clicked()));
+    previousPageIndex = 0;
+    ui->back2->setVisible(false);
+    //writeStudents();
+
+}
+
+
+MainWindow::~MainWindow()
+{
+
+    delete ui;
+}
+
+
+void MainWindow::on_buyerButton_clicked()
+{
+    readBooks();
+    ui->stackedWidget->setCurrentIndex(2);
+    //tries to adds books
+//    int currentRows;
+//        for(unsigned long i = 0; i < books.size()/2; ++i)
+//        {
+//            printBook(books[i]);
+            //adds book to row of all books
+            //int i = 1;
+            //cout << ui->tableWidget_4->currentRow();
+//            currentRows = i;
+//            ui->tableWidget_4->insertRow(ui->tableWidget_4->rowCount());
+//            ui->tableWidget_4->setRowCount(currentRows);
+//            ui->tableWidget_4->setItem(currentRows,0,new QTableWidgetItem(books[i].getOwner()));
+//            ui->tableWidget_4->setItem(currentRows,1,new QTableWidgetItem(books[i].getTitle()));
+//            ui->tableWidget_4->setItem(currentRows,2, new QTableWidgetItem(books[i].getAuthor()));
+//            ui->tableWidget_4->setItem(currentRows, 3, new QTableWidgetItem(books[i].getEdition()));
+//            ui->tableWidget_4->setItem(currentRows,4, new QTableWidgetItem(books[i].getISBN()));
+//            ui->tableWidget_4->setItem(currentRows, 5, new QTableWidgetItem("$" + books[i].getOgPrice()));
+//            ui->tableWidget_4->setItem(currentRows, 6, new QTableWidgetItem("$" + books[i].getPrice()));
+
+        //}
+
+    previousPageIndex = 1;
+
+}
+
+//Create Account Button
+void MainWindow::on_createAccountButton_clicked()
+{
+    //QString username = ui->unameTE->text();
+    ui->unameTE->setText(currentUser);
+    ui->welcomeLabel->setText("Welcome, " + currentUser);
+    //currentUser = username;
+
+    //adds student
+       Student * s = new Student;
+
+     //updates student information
+     s->setUsername(currentUser);
+     s->setFirst_name(ui->fnTE->text());
+     s->setLast_name(ui->lnTE->text());
+     s->setPhone_number(ui->phTE->text());
+    addStudent(s);
+
+    //reads in books
+
+
+     //changes page
+     ui->stackedWidget->setCurrentIndex(1);
+
+}
+
+
+
+void MainWindow::on_exitButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+
+}
+
+
+void MainWindow::on_submitButton_clicked()
+{
+
+    //creates new book
+    Book * newBook = new Book;
+
+    //pulls information
+    QString t = ui->titleTextBox->text();
+    QString a = ui->AuthorTextBox->text();
+    QString is = ui->isbnTextBox->text();
+    QString ogp = ui->ogPriceTextBox->text();
+    QString ap = ui->askPriceTextBox->text();
+    QString ed = ui->editionTextBox->text();
+    QString dep = ui->departmentTextBox->text();
+    QString cl = ui->classNumTextBox->text();
+
+    //sets information
+    newBook->setTitle(t);
+    newBook->setAuthor(a);
+    newBook->setISBN(is);
+    newBook->setPrice(ap);
+    newBook->setOgPrice(ogp);
+    newBook->setEdition(ed);
+    newBook->setDepartment(dep);
+    newBook->setClassNumber(cl);
+    newBook->setOwner(currentUser);
+
+    //adds book to vector
+    addBook(newBook);
+
+    //empties outputs
+    ui->titleTextBox->setText("");
+    ui->AuthorTextBox->setText("");
+    ui->isbnTextBox->setText("");
+    ui->ogPriceTextBox->setText("");
+    ui->askPriceTextBox->setText("");
+    ui->editionTextBox->setText("");
+    ui->classNumTextBox->setText("");
+    ui->departmentTextBox->setText("");
+
+    //adds book to row of all books
+    int currentRows = ui->tableWidget_3->rowCount();
+    ui->tableWidget_3->setRowCount(currentRows +1);
+    ui->tableWidget_3->setItem(currentRows,0,new QTableWidgetItem(currentUser));
+    ui->tableWidget_3->setItem(currentRows,1,new QTableWidgetItem(newBook->getTitle()));
+    ui->tableWidget_3->setItem(currentRows,2, new QTableWidgetItem(newBook->getAuthor()));
+    ui->tableWidget_3->setItem(currentRows, 3, new QTableWidgetItem(newBook->getEdition()));
+    ui->tableWidget_3->setItem(currentRows,4, new QTableWidgetItem(newBook->getISBN()));
+    ui->tableWidget_3->setItem(currentRows, 5, new QTableWidgetItem("$" + newBook->getOgPrice()));
+    ui->tableWidget_3->setItem(currentRows, 6, new QTableWidgetItem("$" + newBook->getPrice()));
+
+    //changes page back
+    ui->stackedWidget->setCurrentIndex(6);
+    ui->update->setVisible(false);
+    ui->remove->setVisible(false);
+}
+
+void MainWindow::on_submitButton_2_clicked()
+{
+    //sets welcome banner to know who is logged in
+    QString username = ui->usernameTextBoxNEW->text();
+    currentUser = username;
+    ui->back2->setVisible(true);
+
+    if(searchStudent(currentUser))
+    {
+
+        //welcomes user
+        ui->welcomeLabel->setText("Welcome, " + username);
+        currentUser = username;
+         //changes page
+         ui->stackedWidget->setCurrentIndex(1);
+    }
+    else
+    {
+        ui->stackedWidget->setCurrentIndex(12);
+        ui->unameTE->setText(currentUser);
+        ui->fnTE->setFocus();
+
+    }
+
+
+    //addStudent(currentStudent);
+
+    //advances to next page
+
+    previousPageIndex = 0;
+}
+
+/*void MainWindow::on_pushButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(10);
+}*/
+
+void MainWindow::on_search2_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(10);
+   previousPageIndex = 2;
+}
+
+void MainWindow::on_pushButton_13_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(4);
+    previousPageIndex = 2;
+}
+
+void MainWindow::on_postingButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(6);
+    previousPageIndex = 5;
+    ui->update->setVisible(false);
+    ui->remove->setVisible(false);
+}
+
+void MainWindow::on_requestButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(7);
+    previousPageIndex = 5;
+}
+
+
+
+void MainWindow::on_pushButton_14_clicked()
+{
+
+    //changes page
+    ui->stackedWidget->setCurrentIndex(8);
+    previousPageIndex = 6;
+}
+
+void MainWindow::on_submitButton_5_clicked()
+{
+    //finds selected row
+     int selectedRow = ui->tableWidget_3->currentRow();
+     Book newBook = books[selectedRow];
+
+     //pulls information
+     QString t = ui->TitleTextEdit2->text();
+     QString a = ui->AuthorTextEdit2->text();
+     QString is = ui->isbnTextEdit2->text();
+     QString ogp = ui->ogPriceTextEdit2->text();
+     QString ap = ui->askPriceTextEdit2->text();
+     QString ed = ui->editionTextEdit2->text();
+     QString dep = ui->departmentTextBox2->text();
+     QString cl = ui->classNumTextBox2->text();
+
+
+     //updates book
+     newBook.setTitle(t);
+     newBook.setAuthor(a);
+     newBook.setISBN(is);
+     newBook.setPrice(ap);
+     newBook.setOgPrice(ogp);
+     newBook.setEdition(ed);
+     newBook.setDepartment(dep);
+     newBook.setClassNumber(cl);
+
+
+
+    //update the tableWidget
+    ui->tableWidget_3->setItem(selectedRow,0,new QTableWidgetItem(currentUser));
+    ui->tableWidget_3->setItem(selectedRow,1,new QTableWidgetItem(newBook.getTitle()));
+    ui->tableWidget_3->setItem(selectedRow,2, new QTableWidgetItem(newBook.getAuthor()));
+    ui->tableWidget_3->setItem(selectedRow, 3, new QTableWidgetItem(newBook.getEdition()));
+    ui->tableWidget_3->setItem(selectedRow,4, new QTableWidgetItem(newBook.getISBN()));
+    ui->tableWidget_3->setItem(selectedRow, 5, new QTableWidgetItem("$" + newBook.getOgPrice()));
+    ui->tableWidget_3->setItem(selectedRow, 6, new QTableWidgetItem("$" + newBook.getPrice()));
+
+    //clears old form
+    ui->AuthorTextEdit2->setText("");
+    ui->TitleTextEdit2->setText("");
+    ui->isbnTextEdit2->setText("");
+    ui->ogPriceTextEdit2->setText("");
+    ui->askPriceTextEdit2->setText("");
+    ui->departmentTextBox2->setText("");
+    ui->classNumTextBox2->setText("");
+    ui->editionTextEdit2->setText("");
+
+    //changes page
+    ui->stackedWidget->setCurrentIndex(6);
+    ui->update->setVisible(false);
+    ui->remove->setVisible(false);
+    previousPageIndex = 11;
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+    previousPageIndex = 10;
+}
+
+//Back Buttons
+
+void MainWindow::on_back2_clicked()
+{
+    //ui->stackedWidget->setCurrentIndex(previousPageIndex);
+    if(previousPageIndex == ui->stackedWidget->currentIndex()){
+        ui->stackedWidget->setCurrentIndex(ui->stackedWidget->currentIndex()-1);
+        if(ui->stackedWidget->currentIndex() == 5){
+            previousPageIndex = 1;
+            ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        }
+        if(ui->stackedWidget->currentIndex() == 0){
+            previousPageIndex = 2;
+            ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        }
+        if(ui->stackedWidget->currentIndex() == 7){
+            previousPageIndex = 5;
+            ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        }
+        if(ui->stackedWidget->currentIndex() == 8){
+            previousPageIndex = 6;
+            ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        }
+        if(ui->stackedWidget->currentIndex() == 13){
+            previousPageIndex = 6;
+            ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        }
+        if(ui->stackedWidget->currentIndex() == 12){
+            previousPageIndex = 1;
+            ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        }
+
+    }
+    else{
+        ui->stackedWidget->setCurrentIndex(previousPageIndex);
+        if(ui->stackedWidget->currentIndex() == 0){
+        ui->back2->setVisible(false);
+        }
+        else ui->back2->setVisible(true);
+    }
+}
+
+//void MainWindow::on_back3_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 3){
+//       ui->stackedWidget->setCurrentIndex(2);
+//   }
+//}
+//void MainWindow::on_back4_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 4){
+//       ui->stackedWidget->setCurrentIndex(3);
+//   }
+//}
+//void MainWindow::on_back5_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 5){
+//       ui->stackedWidget->setCurrentIndex(1);
+//   }
+//}
+//void MainWindow::on_back6_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 6){
+//       ui->stackedWidget->setCurrentIndex(5);
+//   }
+//}
+//void MainWindow::on_back7_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 7){
+//       ui->stackedWidget->setCurrentIndex(5);
+//   }
+//}
+//void MainWindow::on_back8_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 8){
+//       ui->stackedWidget->setCurrentIndex(6);
+//   }
+//}
+//void MainWindow::on_back9_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 9){
+//       ui->stackedWidget->setCurrentIndex(6);
+//   }
+//}
+//void MainWindow::on_back10_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 10){
+//       ui->stackedWidget->setCurrentIndex(2);
+//   }
+//}
+//void MainWindow::on_back11_clicked()
+//{
+//   ui->stackedWidget->setCurrentIndex(previousPageIndex);
+//   if(previousPageIndex == 11){
+//       ui->stackedWidget->setCurrentIndex(9);
+//   }
+//}
+
+void MainWindow::on_updateButton_clicked()
+{
+   ui->stackedWidget->setCurrentIndex(11);
+}
+
+void MainWindow::on_buyerButton_2_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(5);
+    previousPageIndex = 1;
+}
+
+void MainWindow::on_remove_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(13);
+}
+
+
+
+void MainWindow::on_confirmButton_clicked()
+{
+    int selectedRow = ui->tableWidget_3->currentRow();
+    cout << ui->tableWidget_3->currentRow();
+    ui->tableWidget_3->removeRow(selectedRow);
+    //delete books[selectedRow];
+    ui->stackedWidget->setCurrentIndex(6);
+}
+
+void MainWindow::on_update_clicked()
+{
+    //find selected index
+    int selectedRow = ui->tableWidget_3->currentRow();
+    Book mybook = books[selectedRow];
+
+    //sets fields for next page
+    ui->AuthorTextEdit2->setText(mybook.getAuthor());
+    ui->TitleTextEdit2->setText(mybook.getTitle());
+    ui->isbnTextEdit2->setText(mybook.getISBN());
+    ui->ogPriceTextEdit2->setText(mybook.getOgPrice());
+    ui->askPriceTextEdit2->setText(mybook.getPrice());
+    ui->departmentTextBox2->setText(mybook.getDepartment());
+    ui->classNumTextBox2->setText(mybook.getClassNumber());
+    ui->editionTextEdit2->setText(mybook.getEdition());
+
+    ui->stackedWidget->setCurrentIndex(11);
+}
+
+void MainWindow::on_tableWidget_3_cellClicked(int row, int column)
+{
+    ui->remove->setVisible(true);
+    ui->update->setVisible(true);
+}
+
+void MainWindow::on_noThanksButton_clicked()
+{
+    ui->stackedWidget->setCurrentIndex(6);
+}
